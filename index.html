@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f2">
+  <title>Campus Ledger | Student Expense Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Campus Ledger home">
+      <span class="brand-mark" aria-hidden="true">CL</span>
+      <span>campus<span class="brand-light">ledger</span></span>
+    </a>
+    <div class="topbar-right">
+      <span class="date-label" id="today-label"></span>
+      <span class="avatar" aria-label="Student profile">S</span>
+    </div>
+  </header>
+
+  <main id="top" class="dashboard">
+    <section class="welcome-row" aria-labelledby="welcome-title">
+      <div>
+        <p class="eyebrow">YOUR MONEY, IN PLAIN SIGHT</p>
+        <h1 id="welcome-title">The student money dashboard</h1>
+        <p class="welcome-copy">A clearer look at where your month is going.</p>
+      </div>
+      <button class="button button-primary" id="add-expense" type="button">
+        <span aria-hidden="true">+</span> Add expense
+      </button>
+    </section>
+
+    <section class="overview" aria-label="Expense overview">
+      <div class="overview-total">
+        <p class="eyebrow eyebrow-light">ALL RECORDED EXPENSES</p>
+        <p class="total-value" id="total-spent">$0.00</p>
+        <p class="overview-note">Across every entry in your ledger</p>
+      </div>
+      <div class="overview-month">
+        <div class="month-heading">
+          <div>
+            <p class="eyebrow eyebrow-light">THIS MONTH</p>
+            <p class="month-value" id="monthly-spent">$0.00</p>
+          </div>
+          <span class="month-mark" aria-hidden="true">↗</span>
+        </div>
+        <div class="budget-line">
+          <span id="budget-caption">of $650.00 budget</span>
+          <button class="budget-edit" id="edit-budget" type="button">Edit</button>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Monthly budget used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="budget-progress">
+          <span id="budget-fill"></span>
+        </div>
+        <form class="budget-form" id="budget-form" hidden>
+          <label for="budget-input">Monthly budget</label>
+          <div class="budget-input-row">
+            <input id="budget-input" type="number" min="0" step="1" required>
+            <button class="button button-small" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+      <div class="overview-count">
+        <p class="eyebrow eyebrow-light">ENTRIES THIS MONTH</p>
+        <p class="month-value" id="monthly-count">0</p>
+        <p class="overview-note">Small steps add up.</p>
+      </div>
+    </section>
+
+    <section class="charts-grid" aria-label="Spending charts">
+      <article class="chart-panel trend-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">YOUR PACE</p>
+            <h2>Monthly spending</h2>
+          </div>
+          <span class="panel-tag">Last 6 months</span>
+        </div>
+        <div class="trend-chart" id="trend-chart" role="img" aria-label="Monthly spending over the last six months"></div>
+      </article>
+      <article class="chart-panel category-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">THE BREAKDOWN</p>
+            <h2>By category</h2>
+          </div>
+          <span class="panel-tag">All time</span>
+        </div>
+        <div class="category-chart-wrap">
+          <div class="donut-chart" id="category-chart" role="img" aria-label="Expense totals by category">
+            <span class="donut-hole"><strong id="category-total">$0</strong><small>total</small></span>
+          </div>
+          <ul class="category-legend" id="category-legend"></ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="analytics-section" aria-labelledby="analytics-title">
+      <div class="analytics-heading">
+        <div>
+          <p class="eyebrow">LOCAL, RULE-BASED ANALYSIS</p>
+          <h2 id="analytics-title">Spending analytics</h2>
+        </div>
+        <span class="panel-tag">Based on your recorded expenses</span>
+      </div>
+      <div class="analytics-grid">
+        <article class="analytics-card category-insight-card">
+          <p class="eyebrow">HIGHEST CATEGORY · ALL RECORDED</p>
+          <div class="analytics-stat-row">
+            <h3 id="insight-title">No expenses recorded yet</h3>
+            <strong id="insight-share">0%</strong>
+          </div>
+          <p class="analytics-detail" id="insight-summary">Add an expense to see its share of your recorded spending.</p>
+          <div class="share-track" role="progressbar" aria-label="Highest category share of total expenses" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="category-share-progress">
+            <span id="category-share-fill"></span>
+          </div>
+        </article>
+        <article class="analytics-card forecast-card">
+          <p class="eyebrow">CURRENT MONTH · ESTIMATE</p>
+          <h3 class="forecast-value" id="forecast-value">—</h3>
+          <p class="analytics-detail" id="forecast-summary">Add current-month expenses to calculate an estimate.</p>
+        </article>
+        <article class="analytics-card daily-allowance-card">
+          <p class="eyebrow">DAILY ALLOWANCE · INCLUDING TODAY</p>
+          <div class="allowance-heading">
+            <h3 class="forecast-value" id="daily-allowance-value">$0.00</h3>
+            <span class="status-pill status-tight" id="daily-allowance-status">Tight</span>
+          </div>
+          <p class="analytics-detail" id="daily-allowance-detail">Set a monthly budget to calculate a daily limit.</p>
+        </article>
+        <article class="analytics-card unusual-card">
+          <p class="eyebrow">TRANSACTION CHECK</p>
+          <h3 id="unusual-title">Not enough history yet</h3>
+          <p class="analytics-detail" id="unusual-detail">Each check needs at least three other expenses in the same category.</p>
+        </article>
+        <article class="analytics-card category-health-card">
+          <p class="eyebrow">CATEGORY HEALTH · THIS MONTH</p>
+          <h3>Equal-share budget guide</h3>
+          <p class="analytics-detail category-health-note">Each category is compared with 20% of your monthly budget.</p>
+          <div class="category-health-list" id="category-health-list"></div>
+        </article>
+        <article class="analytics-card recurring-card">
+          <p class="eyebrow">REPEATED COMMITMENTS</p>
+          <h3 id="recurring-total">$0.00 estimated monthly</h3>
+          <p class="analytics-detail">Repeated title or stable category costs, extrapolated from date spacing.</p>
+          <ul class="recurring-list" id="recurring-list"></ul>
+        </article>
+        <article class="analytics-card simulator-card">
+          <p class="eyebrow">WHAT-IF SAVINGS SIMULATOR</p>
+          <h3>Try a category reduction</h3>
+          <div class="simulator-controls">
+            <label for="simulator-category">Category</label>
+            <select id="simulator-category" class="filter-select">
+              <option>Food</option><option>Travel</option><option>Books</option><option>Fees</option><option>Other</option>
+            </select>
+            <label for="simulator-reduction">Reduce by <output id="simulator-reduction-value" for="simulator-reduction">25%</output></label>
+            <input id="simulator-reduction" type="range" min="10" max="50" step="5" value="25">
+          </div>
+          <div class="simulator-result">
+            <strong id="simulator-savings">$0.00</strong>
+            <span>estimated monthly savings</span>
+          </div>
+          <div class="simulation-bars" aria-label="Current and projected category spending">
+            <div><span>Current</span><span class="simulation-track"><i id="simulator-current-bar"></i></span><strong id="simulator-current-amount">$0.00</strong></div>
+            <div><span>After change</span><span class="simulation-track"><i id="simulator-projected-bar"></i></span><strong id="simulator-projected-amount">$0.00</strong></div>
+          </div>
+          <p class="analytics-detail" id="simulator-summary">Based on this month's recorded category spending.</p>
+        </article>
+        <article class="analytics-card tips-card">
+          <p class="eyebrow">BUDGET COACH</p>
+          <h3>One practical next step</h3>
+          <p class="analytics-detail" id="insight-suggestion">Add expenses to get a tip based on your categories and monthly budget.</p>
+          <p class="budget-remaining" id="budget-remaining">Monthly budget remaining: $650.00</p>
+        </article>
+      </div>
+      <p class="analytics-note">Estimates extend your current daily average; they are not guarantees. Alerts use category averages and at least three comparison expenses. This is transparent local logic, not an AI model or financial advice.</p>
+    </section>
+
+    <section class="expense-section" aria-labelledby="expenses-title">
+      <div class="expense-heading">
+        <div>
+          <p class="eyebrow">THE LEDGER</p>
+          <h2 id="expenses-title">Recent expenses <span class="count-badge" id="expense-count">0</span></h2>
+        </div>
+        <div class="data-tools" aria-label="Expense data tools">
+          <button class="button button-quiet tool-button" id="export-csv" type="button" title="Export expenses as CSV">↓ CSV</button>
+          <button class="button button-quiet tool-button" id="export-json" type="button" title="Download a JSON backup">↓ JSON</button>
+          <button class="button button-quiet tool-button" id="import-json" type="button" title="Import a JSON backup">↑ Import</button>
+          <input id="import-file" type="file" accept="application/json,.json" hidden>
+        </div>
+      </div>
+      <div class="quick-filters" role="search" aria-label="Quick filter expenses">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">Search expenses</span>
+          <input id="search-input" type="search" placeholder="Search expenses">
+        </label>
+        <label class="sr-only" for="category-filter">Filter by category</label>
+        <select id="category-filter" class="filter-select">
+          <option value="all">All categories</option>
+          <option>Food</option><option>Travel</option><option>Books</option><option>Fees</option><option>Other</option>
+        </select>
+        <label class="date-filter-label" for="date-from">From</label>
+        <input class="date-filter" id="date-from" type="date" aria-label="Expenses from date">
+        <label class="date-filter-label" for="date-to">To</label>
+        <input class="date-filter" id="date-to" type="date" aria-label="Expenses through date">
+        <button class="button button-quiet clear-filters" id="clear-filters" type="button">Clear filters</button>
+      </div>
+      <p class="data-status" id="data-status" role="status" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Expense</th><th scope="col">Category</th><th scope="col">Date</th><th scope="col" class="amount-column">Amount</th><th scope="col"><span class="sr-only">Actions</span></th></tr>
+          </thead>
+          <tbody id="expense-list"></tbody>
+        </table>
+        <p class="empty-state" id="empty-state" hidden>No expenses match that search. Try another filter or add an expense.</p>
+      </div>
+    </section>
+    <footer class="footer-note">Made for student life <span aria-hidden="true">·</span> Your expense data is saved in this browser</footer>
+  </main>
+
+  <dialog class="expense-dialog" id="expense-dialog" aria-labelledby="dialog-title">
+    <form id="expense-form" method="dialog">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">THE LEDGER</p>
+          <h2 id="dialog-title">Add an expense</h2>
+        </div>
+        <button class="icon-button close-dialog" type="button" aria-label="Close dialog" title="Close">×</button>
+      </div>
+      <label class="field-label" for="expense-name">What was it for?</label>
+      <input class="field-input" id="expense-name" name="name" type="text" maxlength="70" placeholder="e.g. Lunch between classes" required>
+      <div class="field-grid">
+        <div>
+          <label class="field-label" for="expense-amount">Amount ($)</label>
+          <input class="field-input" id="expense-amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+        </div>
+        <div>
+          <label class="field-label" for="expense-category">Category</label>
+          <select class="field-input" id="expense-category" name="category" required>
+            <option>Food</option><option>Travel</option><option>Books</option><option>Fees</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <label class="field-label" for="expense-date">Date</label>
+      <input class="field-input" id="expense-date" name="date" type="date" required>
+      <div class="dialog-actions">
+        <button class="button button-quiet close-dialog" type="button">Cancel</button>
+        <button class="button button-primary" id="save-expense" type="submit">Save expense</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
